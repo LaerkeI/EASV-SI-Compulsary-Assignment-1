@@ -7,12 +7,19 @@ namespace TimelineService
         {
 
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add an HttpClient to the services container
+            builder.Services.AddHttpClient();
+
             var app = builder.Build();
 
             // Timeline (get tweets from followed users)
-            app.MapGet("/timeline/{userId}", async (int userId, HttpClient httpClient) => {
+            app.MapGet("/timeline/{userId}", async (int userId, IHttpClientFactory httpClientFactory) =>
+            {
+                var httpClient = httpClientFactory.CreateClient();
+
                 // Call User Management Service to get followed users
-                var user = await httpClient.GetFromJsonAsync<User>($"http://user-service/users/{userId}");
+                var user = await httpClient.GetFromJsonAsync<User>($"http://user-management-service:80/users/{userId}");
                 if (user == null) return Results.NotFound();
 
                 var followedTweets = new List<Tweet>();
@@ -20,8 +27,9 @@ namespace TimelineService
                 // Fetch tweets from followed users
                 foreach (var followedUserId in user.FollowedUsers)
                 {
-                    var tweets = await httpClient.GetFromJsonAsync<List<Tweet>>($"http://post-service/tweets?userId={followedUserId}");
-                    followedTweets.AddRange(tweets);
+                    var tweets = await httpClient.GetFromJsonAsync<List<Tweet>>($"http://post-management-service:80/tweets?userId={followedUserId}");
+                    if (tweets != null)
+                        followedTweets.AddRange(tweets);
                 }
 
                 return Results.Ok(followedTweets);

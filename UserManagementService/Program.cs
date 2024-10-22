@@ -19,6 +19,12 @@ namespace UserManagementService
                 return Results.Ok(user);
             });
 
+            app.MapGet("/users", () =>
+            {
+                return Results.Ok(users);
+
+            });
+
             app.MapGet("/users/{id}", (int id) => 
             {
                 var user = users.FirstOrDefault(u => u.Id == id);
