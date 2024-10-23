@@ -21,8 +21,8 @@ namespace ApiGateway
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false,  // We are skipping issuer validation
-                        ValidateAudience = false,  // Skipping audience validation too
+                        ValidateIssuer = false,  // Skipping issuer validation for simplicity
+                        ValidateAudience = false,  // Skipping audience validation for simplicity
                         ValidateLifetime = true,  // Ensure the token hasn’t expired
                         ValidateIssuerSigningKey = true,  // Validate the token signature
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
