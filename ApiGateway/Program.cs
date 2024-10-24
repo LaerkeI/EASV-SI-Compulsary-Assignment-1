@@ -1,6 +1,7 @@
 namespace ApiGateway
 {
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.IdentityModel.Tokens;
     using Ocelot.DependencyInjection;
     using Ocelot.Middleware;
@@ -43,6 +44,9 @@ namespace ApiGateway
 
             // Use Ocelot middleware for routing
             await app.UseOcelot();
+
+            // This secured endpoint is for component tests.
+            app.MapGet("/secured-endpoint", [Authorize] () => Results.Ok("You are authorized!"));
 
             app.MapGet("/generate-token", (IConfiguration config) => {
                 var token = GenerateJwtToken(0, "admin", config);

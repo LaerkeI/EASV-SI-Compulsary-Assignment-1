@@ -1,6 +1,21 @@
 {
   "Routes": [
     {
+      "DownstreamPathTemplate": "/secured-endpoint",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "api-gateway",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/secured-endpoint",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
       "DownstreamPathTemplate": "/generate-token",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
